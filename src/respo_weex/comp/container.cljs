@@ -1,16 +1,13 @@
 
 (ns respo-weex.comp.container
-  (:require [hsl.core :refer [hsl]]
-            [respo-ui.style :as ui]
-            [respo.alias :refer [create-comp div span]]
-            [respo.comp.space :refer [comp-space]]
-            [respo.comp.text :refer [comp-text]]))
+  (:require [respo-weex.alias :refer [create-comp div]]
+            [respo-weex.comp.text :refer [comp-text]]
+            [respo-weex.comp.todolist :refer [comp-todolist]]))
 
-(defn render []
+(def style-states {:padding 8})
+
+(defn render [store states]
   (fn [state mutate!]
-    (div
-     {:style (merge ui/global)}
-     (comp-space "8px" nil)
-     (div {:style ui/button} (comp-text "demo" nil)))))
+    (div {} (comp-todolist store) (div {:style style-states} (comp-text (pr-str states) nil)))))
 
 (def comp-container (create-comp :container render))

@@ -5,6 +5,7 @@
                   [org.clojure/clojurescript "1.9.293"     :scope "test"]
                   [adzerk/boot-cljs          "1.7.228-1"   :scope "test"]
                   [adzerk/boot-reload        "0.4.13"      :scope "test"]
+                  [binaryage/devtools        "0.8.2"       :scope "test"]
                   [cirru/boot-stack-server   "0.1.24"      :scope "test"]
                   [adzerk/boot-test          "1.1.2"       :scope "test"]
                   [mvc-works/hsl             "0.1.2"]
@@ -29,36 +30,6 @@
        :scm         {:url "https://github.com/mvc-works/respo-weex"}
        :license     {"MIT" "http://opensource.org/licenses/mit-license.php"}})
 
-(defn html-dsl [data fileset]
-  (make-html
-    (html {}
-      (head {}
-        (title {:attrs {:innerHTML "Respo Weex"}})
-        (link {:attrs {:rel "icon" :type "image/png" :href "http://logo.mvc-works.org/mvc.png"}})
-        (link {:attrs {:rel "stylesheet" :type "text/css" :href "style.css"}})
-        (link (:attrs {:rel "manifest" :href "manifest.json"}))
-        (meta' {:attrs {:charset "utf-8"}})
-        (meta' {:attrs {:name "viewport" :content "width=device-width, initial-scale=1"}})
-        (meta' {:attrs {:id "ssr-stages" :content "#{}"}})
-        (style {:attrs {:innerHTML "body {margin: 0;}"}})
-        (style {:attrs {:innerHTML "body * {box-sizing: border-box;}"}})
-        (script {:attrs {:id "config" :type "text/edn" :innerHTML (pr-str data)}}))
-      (body {}
-        (div {:attrs {:id "app"}})
-        (script {:attrs {:src "main.js"}})))))
-
-(deftask html-file
-  "task to generate HTML file"
-  [d data VAL edn "data piece for rendering"]
-  (with-pre-wrap fileset
-    (let [tmp (tmp-dir!)
-          out (io/file tmp "dev.html")]
-      (empty-dir! tmp)
-      (spit out (html-dsl data fileset))
-      (-> fileset
-        (add-resource tmp)
-        (commit!)))))
-
 (deftask editor! []
   (comp
     (wait)
@@ -70,11 +41,9 @@
     :asset-paths #{"assets/"})
   (comp
     (editor!)
-    (html-file :data {:build? false})
-    (reload :on-jsload 'respo-weex.main/on-jsload!
-            :cljs-asset-path ".")
-    (cljs :compiler-options {:language-in :ecmascript5})
-    (target :no-clean true)))
+    (cljs :optimizations :simple
+          :compiler-options {:language-in :ecmascript5})
+    (target)))
 
 (deftask generate-code []
   (comp
@@ -88,7 +57,6 @@
     (transform-stack :filename "stack-sepal.ir")
     (cljs :optimizations :simple
           :compiler-options {:language-in :ecmascript5})
-    (html-file :data {:build? true})
     (target)))
 
 (deftask build-advanced []
@@ -103,7 +71,6 @@
                              :parallel-build true
                              :optimize-constants true
                              :source-map true})
-    (html-file :data {:build? true})
     (target)))
 
 (deftask rsync []
