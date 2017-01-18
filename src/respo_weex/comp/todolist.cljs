@@ -38,7 +38,7 @@
    :display :flex,
    :flex-direction :row})
 
-(def style-panel {:display :flex, :margin-bottom 4})
+(def style-panel {:display :flex, :margin-bottom 4, :flex-direction :row})
 
 (defn on-test [e dispatch!]
   (println "trigger test!")

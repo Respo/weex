@@ -3,7 +3,7 @@
   (:require [clojure.string :as string]
             [respo-weex.polyfill :refer [read-string*]]
             [respo-weex.util.format :refer [dashed->camel event->prop ensure-string]]
-            [respo-weex.render.make-dom :refer [make-element style->string]]
+            [respo-weex.render.make-dom :refer [make-element]]
             [respo-weex.util.information :refer [no-bubble-events]]))
 
 (defn is-no-bubble? [event-name] (some? (some (fn [x] (= x event-name)) no-bubble-events)))
@@ -41,7 +41,7 @@
 (defn add-prop [target op]
   (let [prop-name (dashed->camel (name (key op))), prop-value (val op)]
     (case prop-name
-      "style" (aset target prop-name (style->string prop-value))
+      "style" (aset target prop-name (clj->js prop-value))
       (aset target prop-name prop-value))))
 
 (defn replace-prop [target op]

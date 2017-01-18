@@ -4,14 +4,6 @@
             [respo-weex.util.format :refer [dashed->camel event->prop ensure-string]]
             [respo-weex.polyfill :refer [document-create-element*]]))
 
-(defn style->string [styles]
-  (string/join
-   ""
-   (->> styles
-        (map
-         (fn [entry]
-           (let [k (first entry), v (ensure-string (last entry))] (str (name k) ":" v ";")))))))
-
 (defn make-element [virtual-element no-bubble-collection]
   (let [tag-name (name (:name virtual-element))
         attrs (:attrs virtual-element)
@@ -31,7 +23,14 @@
              (let [k (dashed->camel (name (first entry))), v (last entry)]
                (.setAttr element k v)
                (aset element k v))))))
-    (.setAttr element "style" (style->string style))
+    (.setClassStyle
+     element
+     (let [result (->> style
+                       (map (fn [entry] (let [[k v] entry] [(dashed->camel (name k)) v])))
+                       (into {})
+                       (clj->js))]
+       (.log js/console result)
+       result))
     (doall
      (->> (:event virtual-element)
           (map

@@ -6,9 +6,9 @@
             [respo-weex.render.make-dom :refer [make-element]]
             [respo-weex.util.information :refer [bubble-events no-bubble-events]]))
 
-(defn read-events [target] (read-string* (aget (.-dataset target) "event")))
+(defn read-events [target] (read-string* (aget (.-attr target) "event")))
 
-(defn read-coord [target] (read-string* (aget (.-dataset target) "coord")))
+(defn read-coord [target] (read-string* (aget (.-attr target) "coord")))
 
 (defn maybe-trigger [target event-name simple-event deliver-event]
   (let [coord (read-coord target), active-events (read-events target)]
