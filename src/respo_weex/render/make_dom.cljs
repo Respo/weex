@@ -22,16 +22,16 @@
                             (map
                              (fn [entry] (make-element (last entry) no-bubble-collection))))
         event-keys (into #{} (keys (:event virtual-element)))]
-    (aset (.-dataset element) "coord" (pr-str (:coord virtual-element)))
-    (aset (.-dataset element) "event" (pr-str event-keys))
+    (.setAttr element "coord" (pr-str (:coord virtual-element)))
+    (.setAttr element "event" (pr-str event-keys))
     (doall
      (->> attrs
           (map
            (fn [entry]
              (let [k (dashed->camel (name (first entry))), v (last entry)]
-               (.setAttribute element k v)
+               (.setAttr element k v)
                (aset element k v))))))
-    (.setAttribute element "style" (style->string style))
+    (.setAttr element "style" (style->string style))
     (doall
      (->> (:event virtual-element)
           (map

@@ -4,20 +4,15 @@
   :dependencies '[[org.clojure/clojure       "1.8.0"       :scope "test"]
                   [org.clojure/clojurescript "1.9.293"     :scope "test"]
                   [adzerk/boot-cljs          "1.7.228-1"   :scope "test"]
-                  [adzerk/boot-reload        "0.4.13"      :scope "test"]
-                  [binaryage/devtools        "0.8.2"       :scope "test"]
                   [cirru/boot-stack-server   "0.1.24"      :scope "test"]
-                  [adzerk/boot-test          "1.1.2"       :scope "test"]
                   [mvc-works/hsl             "0.1.2"]
                   [respo/ui                  "0.1.6"]
                   [respo                     "0.3.34"]])
 
 (require '[adzerk.boot-cljs   :refer [cljs]]
-         '[adzerk.boot-reload :refer [reload]]
          '[stack-server.core  :refer [start-stack-editor! transform-stack]]
          '[respo.alias        :refer [html head title script style meta' div link body]]
          '[respo.render.html  :refer [make-html]]
-         '[adzerk.boot-test   :refer :all]
          '[clojure.java.io    :as    io])
 
 (def +version+ "0.1.0")
@@ -56,7 +51,11 @@
   (comp
     (transform-stack :filename "stack-sepal.ir")
     (cljs :optimizations :simple
-          :compiler-options {:language-in :ecmascript5})
+          :compiler-options {:language-in :ecmascript5
+                             :parallel-build true
+                             :pseudo-names true
+                             :static-fns true
+                             :source-map true})
     (target)))
 
 (deftask build-advanced []
@@ -92,10 +91,3 @@
   (comp
     (build)
     (push :repo "clojars" :gpg-sign (not (.endsWith +version+ "-SNAPSHOT")))))
-
-(deftask watch-test []
-  (set-env!
-    :source-paths #{"src" "test"})
-  (comp
-    (watch)
-    (test :namespaces '#{respo-weex.test})))

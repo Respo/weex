@@ -67,6 +67,8 @@
 
 (defn select [props & children] (create-element :select props children))
 
+(defn text [props & children] (create-element :text props children))
+
 (defn a [props & children] (create-element :a props children))
 
 (defn meta' [props & children] (create-element :meta props children))

@@ -58,7 +58,7 @@
           (map
            (fn [entry]
              (let [event-string (name (key entry)), listener (val entry)]
-               (.addEventListener mount-point event-string listener))))))
+               (.addEvent mount-point event-string listener))))))
     (swap! dom-registry assoc mount-point {:listeners bubble-collection})))
 
 (defn patch-instance [changes mount-point deliver-event]
