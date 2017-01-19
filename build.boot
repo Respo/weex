@@ -56,7 +56,6 @@
           :compiler-options {:language-in :ecmascript5
                              :parallel-build true
                              :pseudo-names true
-                             :static-fns true
                              :source-map true})
     (target)))
 
@@ -67,8 +66,6 @@
     (transform-stack :filename "stack-sepal.ir")
     (cljs :optimizations :advanced
           :compiler-options {:language-in :ecmascript5
-                             :pseudo-names true
-                             :static-fns true
                              :parallel-build true
                              :optimize-constants true
                              :source-map false})
@@ -76,7 +73,7 @@
 
 (deftask rsync []
   (with-pre-wrap fileset
-    (sh "rsync" "-r" "target/" "repo.tiye.me:repo/Respo/weex" "--exclude" "main.out" "--delete")
+    (sh "rsync" "-r" "target/main.js" "repo.respo.site:repo/Respo/weex/main.js")
     fileset))
 
 (deftask build []

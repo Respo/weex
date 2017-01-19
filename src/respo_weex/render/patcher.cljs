@@ -17,13 +17,13 @@
 
 (defn replace-style [target op]
   (let [style-name (dashed->camel (name (key op))), style-value (ensure-string (val op))]
-    (.setStyle target style-name style-value)))
+    (.call (aget target "setStyle") target style-name style-value)))
 
 (defn replace-element [target op no-bubble-collection]
   (let [new-element (make-element op no-bubble-collection)
         parent-element (.-parentNode target)]
     (.insertBefore parent-element new-element target)
-    (.remove target)))
+    (.removeChild (.-parentNode target) target)))
 
 (defn append-element [target op no-bubble-collection]
   (let [new-element (make-element op no-bubble-collection)] (.appendChild target new-element)))
@@ -36,26 +36,29 @@
       (.addEvent target (name event-name) (fn [event] (maybe-listener event coord))))
     (aset (.-dataset target) "event" new-events-list)))
 
-(defn rm-prop [target op] (.setAttr target (dashed->camel (name op)) nil))
+(defn rm-prop [target op]
+  (.call (aget target "setAttr") target (dashed->camel (name op)) nil))
 
 (defn add-prop [target op]
   (let [prop-name (dashed->camel (name (key op))), prop-value (val op)]
     (case prop-name
-      "style" (aset target prop-name (clj->js prop-value))
-      (aset target prop-name prop-value))))
+      "style" (.call (aget target "setClassStyle") target (clj->js prop-value))
+      (.call (aget target "setAttr") target prop-name prop-value))))
 
 (defn replace-prop [target op]
   (let [prop-name (dashed->camel (name (key op))), prop-value (val op)]
     (if (= prop-name "value")
-      (if (not= prop-value (.-value (.-attr target))) (.setAttr target prop-name prop-value))
-      (.setAttr target prop-name prop-value))))
+      (if (not= prop-value (-> target (aget "attr") (aget "value")))
+        (.call (aget target "setAttr") target prop-name prop-value))
+      (.call (aget target "setAttr") target prop-name prop-value))))
 
 (defn add-style [target op]
   (let [style-name (dashed->camel (name (key op))), style-value (ensure-string (val op))]
-    (.setStyle target style-name style-value)))
+    (.call (aget target "setStyle") target style-name style-value)))
 
 (defn rm-style [target op]
-  (let [style-name (dashed->camel (name op))] (.setStyle target style-name nil)))
+  (let [style-name (dashed->camel (name op))]
+    (.call (aget target "setStyle") target style-name nil)))
 
 (defn rm-element [target op] (.removeChild (.-parentNode target) target))
 

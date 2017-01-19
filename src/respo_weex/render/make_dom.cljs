@@ -14,16 +14,16 @@
                             (map
                              (fn [entry] (make-element (last entry) no-bubble-collection))))
         event-keys (into #{} (keys (:event virtual-element)))]
-    (.setAttr element "coord" (pr-str (:coord virtual-element)))
-    (.setAttr element "event" (pr-str event-keys))
+    (.call (aget element "setAttr") element "coord" (pr-str (:coord virtual-element)))
+    (.call (aget element "setAttr") element "event" (pr-str event-keys))
     (doall
      (->> attrs
           (map
            (fn [entry]
              (let [k (dashed->camel (name (first entry))), v (last entry)]
-               (.setAttr element k v)
-               (aset element k v))))))
-    (.setClassStyle
+               (.call (aget element "setAttr") element k v))))))
+    (.call
+     (aget element "setClassStyle")
      element
      (let [result (->> style
                        (map (fn [entry] (let [[k v] entry] [(dashed->camel (name k)) v])))
@@ -39,7 +39,8 @@
                    maybe-listener (get no-bubble-collection event-name)]
                (comment println "Add listener:" element name-in-string maybe-listener)
                (if (some? maybe-listener)
-                 (.addEvent
+                 (.call
+                  (aget element "addEvent")
                   element
                   name-in-string
                   (fn [event] (maybe-listener event (:coord virtual-element))))))))))

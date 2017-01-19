@@ -45,6 +45,7 @@
        {:style (merge widget/input {:width 320}),
         :event {:input (on-text-change task)},
         :attrs {:placeholder "Task", :value (:text task)}}))
+     (comp-space nil 8)
      (div
       {:style style-row}
       (input
@@ -55,6 +56,7 @@
       (div
        {:style widget/button, :event {:click (handle-remove task)}}
        (comp-text "Remove" widget/button-text)))
+     (comp-space nil 8)
      (div {:style {}} (comp-text state nil)))))
 
 (def task-component (create-comp :task init-state update-state render))
