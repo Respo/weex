@@ -20,7 +20,7 @@
 
 (defn handle-add [state mutate!]
   (fn [e dispatch!]
-    (println "Handle add" state e)
+    (comment println "Handle add" state e)
     (dispatch! :add (:draft state))
     (mutate! {:draft ""})))
 
@@ -32,7 +32,7 @@
    :padding 10,
    :font-family "\"微软雅黑\", Verdana"})
 
-(def style-list {:color :black, :background-color (hsl 120 20 98)})
+(def style-list {:color :black, :background-color "#eee"})
 
 (def style-toolbar
   {:white-space :nowrap,
@@ -95,11 +95,11 @@
         {:style style-toolbar, :attrs {:spell-check true}}
         (div
          {:style widget/button, :event (if (:locked? state) {} {:click clear-done})}
-         (comp-text "Clear2"))
+         (comp-text "Clear2" widget/button-text))
         (comp-space 8 nil)
         (div
          {:style widget/button, :event {:click (on-lock (:locked? state) mutate!)}}
-         (comp-text (str "Lock?" (:locked? state)) nil))
+         (comp-text (str "Lock?" (:locked? state)) widget/button-text))
         (comp-space 8 nil)
         (comp-wrap)))
      (comment comp-debug tasks {}))))

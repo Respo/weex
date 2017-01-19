@@ -19,6 +19,7 @@
 (defn mutate-factory [global-element global-states]
   (fn [coord]
     (fn [& state-args]
+      (println "Calling mutate!" coord state-args)
       (let [component (get-markup-at @global-element (subvec coord 0 (- (count coord) 1)))
             init-state (:init-state component)
             update-state (:update-state component)

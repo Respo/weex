@@ -17,26 +17,26 @@
 
 (defn replace-style [target op]
   (let [style-name (dashed->camel (name (key op))), style-value (ensure-string (val op))]
-    (aset (.-style target) style-name style-value)))
+    (.setStyle target style-name style-value)))
 
 (defn replace-element [target op no-bubble-collection]
   (let [new-element (make-element op no-bubble-collection)
-        parent-element (.-parentElement target)]
+        parent-element (.-parentNode target)]
     (.insertBefore parent-element new-element target)
     (.remove target)))
 
 (defn append-element [target op no-bubble-collection]
   (let [new-element (make-element op no-bubble-collection)] (.appendChild target new-element)))
 
-(defn add-event [target event-name no-bubble-collection]
-  (let [event-prop (event->prop event-name)
-        existing-events (read-string* (aget (.-dataset target) "event"))
+(defn add-event [target event-name no-bubble-collection coord]
+  (let [existing-events (read-string* (aget (.-dataset target) "event"))
         new-events-list (pr-str (conj existing-events event-name))
         maybe-listener (get no-bubble-collection event-name)]
-    (if (some? maybe-listener) (aset target event-prop maybe-listener))
+    (if (some? maybe-listener)
+      (.addEvent target (name event-name) (fn [event] (maybe-listener event coord))))
     (aset (.-dataset target) "event" new-events-list)))
 
-(defn rm-prop [target op] (aset target (dashed->camel (name op)) nil))
+(defn rm-prop [target op] (.setAttr target (dashed->camel (name op)) nil))
 
 (defn add-prop [target op]
   (let [prop-name (dashed->camel (name (key op))), prop-value (val op)]
@@ -47,17 +47,17 @@
 (defn replace-prop [target op]
   (let [prop-name (dashed->camel (name (key op))), prop-value (val op)]
     (if (= prop-name "value")
-      (if (not= prop-value (.-value target)) (aset target prop-name prop-value))
-      (aset target prop-name prop-value))))
+      (if (not= prop-value (.-value (.-attr target))) (.setAttr target prop-name prop-value))
+      (.setAttr target prop-name prop-value))))
 
 (defn add-style [target op]
   (let [style-name (dashed->camel (name (key op))), style-value (ensure-string (val op))]
-    (aset (.-style target) style-name style-value)))
+    (.setStyle target style-name style-value)))
 
 (defn rm-style [target op]
-  (let [style-name (dashed->camel (name op))] (aset (.-style target) style-name nil)))
+  (let [style-name (dashed->camel (name op))] (.setStyle target style-name nil)))
 
-(defn rm-element [target op] (.remove target))
+(defn rm-element [target op] (.removeChild (.-parentNode target) target))
 
 (defn find-target [root coord]
   (if (empty? coord)
@@ -67,20 +67,21 @@
 
 (defn add-element [target op no-bubble-collection]
   (let [new-element (make-element op no-bubble-collection)
-        parent-element (.-parentElement target)]
+        parent-element (.-parentNode target)]
     (.insertBefore parent-element new-element target)))
 
 (defn apply-dom-changes [changes mount-point no-bubble-collection]
-  (let [root (.-firstChild mount-point)]
+  (let [root (aget (.-children mount-point) 0)]
     (doall
      (->> changes
           (map
            (fn [op]
+             (comment .log js/console root mount-point)
+             (comment println op)
              (let [op-type (first op)
                    coord (get op 1)
                    op-data (get op 2)
                    target (find-target root coord)]
-               (comment println op-type target op-data)
                (case op-type
                  :replace-prop (replace-prop target op-data)
                  :add-prop (add-prop target op-data)
@@ -88,7 +89,7 @@
                  :add-style (add-style target op-data)
                  :replace-style (replace-style target op-data)
                  :rm-style (rm-style target op-data)
-                 :add-event (add-event target op-data no-bubble-collection)
+                 :add-event (add-event target op-data no-bubble-collection coord)
                  :rm-event (rm-event target op-data)
                  :add (add-element target op-data no-bubble-collection)
                  :rm (rm-element target op-data)

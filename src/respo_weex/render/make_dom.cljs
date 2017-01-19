@@ -37,7 +37,11 @@
              (let [event-name (key entry)
                    name-in-string (name event-name)
                    maybe-listener (get no-bubble-collection event-name)]
-               (println "Add listener:" element name-in-string maybe-listener)
-               (if (some? maybe-listener) (.addEvent element name-in-string maybe-listener)))))))
+               (comment println "Add listener:" element name-in-string maybe-listener)
+               (if (some? maybe-listener)
+                 (.addEvent
+                  element
+                  name-in-string
+                  (fn [event] (maybe-listener event (:coord virtual-element))))))))))
     (doseq [child-element child-elements] (.appendChild element child-element))
     element))

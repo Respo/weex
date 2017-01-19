@@ -31,6 +31,7 @@
         changes (find-element-diffs [] [] @global-element element)]
     (comment println @global-element)
     (comment println "changes:" (pr-str (mapv (partial take 2) changes)))
+    (println "Changes:" (pr-str changes))
     (patch-instance changes target deliver-event)
     (reset! global-element element)
     (reset! cache-element element)))

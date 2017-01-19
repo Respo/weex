@@ -37,7 +37,9 @@
   (comp
     (editor!)
     (cljs :optimizations :simple
-          :compiler-options {:language-in :ecmascript5})
+          :compiler-options {:language-in :ecmascript5
+                             :source-map true
+                             :pseudo-names true})
     (target)))
 
 (deftask generate-code []
@@ -69,7 +71,7 @@
                              :static-fns true
                              :parallel-build true
                              :optimize-constants true
-                             :source-map true})
+                             :source-map false})
     (target)))
 
 (deftask rsync []

@@ -28,6 +28,9 @@
     (render-app! target)
     (add-watch global-store :gc (fn [[]] (gc-states! global-states)))
     (add-watch global-store :renderer (fn [] (render-app! target)))
-    (add-watch global-states :renderer (fn [] (render-app! target)))))
+    (add-watch
+     global-states
+     :renderer
+     (fn [] (println "State changes:" @global-states) (render-app! target)))))
 
 (-main)

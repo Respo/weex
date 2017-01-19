@@ -3,7 +3,6 @@
 
 (def input
   {:line-height "60px",
-   :min-width "300px",
    :color :white,
    :font-size 32,
    :background-color "#ccc",
