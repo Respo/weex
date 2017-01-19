@@ -12,6 +12,8 @@ Respo Weex
 
 [qr]: http://www.qr-code-generator.com/
 
+![](https://camo.githubusercontent.com/11b6ddd7364b6fd42c9efd63939150a950b0de1a/68747470733a2f2f696d672e616c6963646e2e636f6d2f7470732f5442317a424c6150585858585858655858585858585858585858582d3132312d35392e737667)
+
 ### Develop
 
 To run the demo, you to install Weex playground first. And then Boot.
