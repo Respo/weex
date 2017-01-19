@@ -44,22 +44,7 @@
                                    (fn [event-name]
                                      [event-name (build-listener event-name deliver-event)]))
                                   (into {}))]
-    (set! (.-innerHTML mount-point) "")
     (.appendChild mount-point (make-element entire-dom no-bubble-collection))))
-
-(defn initialize-instance [mount-point deliver-event]
-  (let [bubble-collection (->> bubble-events
-                               (map
-                                (fn [event-name]
-                                  [event-name (build-listener event-name deliver-event)]))
-                               (into {}))]
-    (doall
-     (->> bubble-collection
-          (map
-           (fn [entry]
-             (let [event-string (name (key entry)), listener (val entry)]
-               (.addEvent mount-point event-string listener))))))
-    (swap! dom-registry assoc mount-point {:listeners bubble-collection})))
 
 (defn patch-instance [changes mount-point deliver-event]
   (let [no-bubble-collection (->> no-bubble-events

@@ -9,7 +9,7 @@
             [respo-weex.comp.space :refer [comp-space]]
             [respo-weex.comp.text :refer [comp-text]]
             [respo-weex.comp.wrap :refer [comp-wrap]]
-            [respo-weex.polyfill :refer [text-width* io-get-time* set-timeout*]]
+            [respo-weex.polyfill :refer [io-get-time* set-timeout*]]
             [respo-weex.style.widget :as widget]))
 
 (defn clear-done [e dispatch!] (println "dispatch clear-done") (dispatch! :clear nil))
@@ -19,13 +19,16 @@
   (merge old-state changes))
 
 (defn handle-add [state mutate!]
-  (fn [e dispatch!] (dispatch! :add (:draft state)) (mutate! {:draft ""})))
+  (fn [e dispatch!]
+    (println "Handle add" state e)
+    (dispatch! :add (:draft state))
+    (mutate! {:draft ""})))
 
 (def style-root
   {:line-height "24px",
    :color :black,
    :font-size 16,
-   :background-color (hsl 120 20 98),
+   :background-color "#eee",
    :padding 10,
    :font-family "\"微软雅黑\", Verdana"})
 
@@ -54,7 +57,8 @@
 
 (defn init-state [props] {:draft "", :locked? false})
 
-(defn on-text-change [mutate!] (fn [e dispatch!] (mutate! {:draft (:value e)})))
+(defn on-text-change [mutate!]
+  (fn [e dispatch!] (println "Change triggered") (mutate! {:draft (:value e)})))
 
 (defn on-lock [locked? mutate!] (fn [e dispatch!] (mutate! {:locked? (not locked?)})))
 
@@ -66,24 +70,23 @@
      (div
       {:style style-panel}
       (input
-       {:style (merge
-                widget/input
-                {:width (max
-                         200
-                         (+ 24 (text-width* (:draft state) 16 "BlinkMacSystemFont")))}),
+       {:style (merge widget/input {:width 200}),
         :event {:focus on-focus, :input (on-text-change mutate!)},
         :attrs {:placeholder "Text", :value (:draft state)}})
       (comp-space 8 nil)
-      (span
+      (div
        {:style widget/button, :event {:click (handle-add state mutate!)}}
-       (comp-text "Add" nil))
+       (comp-text "Add" widget/button-text))
       (comp-space 8 nil)
-      (span
-       {:style widget/button, :event {:click clear-done}, :attrs {:inner-text "Clear"}})
+      (div
+       {:style widget/button, :event {:click clear-done}}
+       (comp-text "Clear" widget/button-text))
       (comp-space 8 nil)
       (div
        {}
-       (div {:style widget/button, :event {:click on-test}} (comp-text "heavy tasks" nil))))
+       (div
+        {:style widget/button, :event {:click on-test}}
+        (comp-text "heavy tasks" widget/button-text))))
      (div
       {:style style-list, :attrs {:class-name "task-list"}}
       (->> tasks (reverse) (map (fn [task] [(:id task) (task-component task)]))))

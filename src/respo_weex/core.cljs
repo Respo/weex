@@ -5,9 +5,7 @@
             [respo-weex.controller.deliver :refer [build-deliver-event mutate-factory]]
             [respo-weex.render.differ :refer [find-element-diffs]]
             [respo-weex.util.format :refer [purify-element mute-element]]
-            [respo-weex.controller.client
-             :refer
-             [initialize-instance activate-instance patch-instance]]
+            [respo-weex.controller.client :refer [activate-instance patch-instance]]
             [respo-weex.polyfill :refer [log*]]
             [respo-weex.util.gc :refer [find-removed apply-remove]]))
 
@@ -23,7 +21,6 @@
   (let [element (render-element markup states-ref)
         deliver-event (build-deliver-event global-element dispatch!)]
     (comment println "mount app")
-    (initialize-instance target deliver-event)
     (activate-instance (purify-element element) target deliver-event)
     (reset! global-element element)
     (reset! cache-element element)))

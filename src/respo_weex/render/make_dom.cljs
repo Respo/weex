@@ -29,17 +29,15 @@
                        (map (fn [entry] (let [[k v] entry] [(dashed->camel (name k)) v])))
                        (into {})
                        (clj->js))]
-       (.log js/console result)
        result))
     (doall
      (->> (:event virtual-element)
           (map
            (fn [entry]
-             (comment println "Looking into event:" entry)
              (let [event-name (key entry)
-                   name-in-string (event->prop event-name)
+                   name-in-string (name event-name)
                    maybe-listener (get no-bubble-collection event-name)]
-               (comment println "listener:" event-name maybe-listener name-in-string)
-               (if (some? maybe-listener) (aset element name-in-string maybe-listener)))))))
+               (println "Add listener:" element name-in-string maybe-listener)
+               (if (some? maybe-listener) (.addEvent element name-in-string maybe-listener)))))))
     (doseq [child-element child-elements] (.appendChild element child-element))
     element))
