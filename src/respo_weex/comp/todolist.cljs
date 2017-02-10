@@ -25,21 +25,21 @@
     (mutate! {:draft ""})))
 
 (def style-root
-  {:line-height "24px",
-   :color :black,
-   :font-size 16,
+  {:color :black,
    :background-color "#eee",
+   :line-height "24px",
+   :font-size 16,
    :padding 10,
    :font-family "\"微软雅黑\", Verdana"})
 
 (def style-list {:color :black, :background-color "#eee"})
 
 (def style-toolbar
-  {:white-space :nowrap,
-   :padding "4px 0",
+  {:display :flex,
+   :flex-direction :row,
    :justify-content :start,
-   :display :flex,
-   :flex-direction :row})
+   :padding "4px 0",
+   :white-space :nowrap})
 
 (def style-panel {:display :flex, :margin-bottom 4, :flex-direction :row})
 
@@ -71,7 +71,7 @@
       {:style style-panel}
       (input
        {:style (merge widget/input {:width 200}),
-        :event {:focus on-focus, :input (on-text-change mutate!)},
+        :event {:input (on-text-change mutate!), :focus on-focus},
         :attrs {:placeholder "Text", :value (:draft state)}})
       (comp-space 8 nil)
       (div

@@ -1,23 +1,23 @@
 
 (ns respo-weex.style.widget (:require [hsl.core :refer [hsl]]))
 
-(def input
-  {:line-height "60px",
-   :color :white,
-   :font-size 32,
-   :background-color "#ccc",
-   :padding-right 8,
-   :padding-left 8,
-   :outline :none,
-   :border :none})
-
 (def button-text {:color :white, :font-size 32, :font-family "Avenir,Verdana"})
 
-(def button
-  {:line-height "60px",
-   :background-color "#aad",
-   :cursor :pointer,
-   :padding-right 8,
+(def input
+  {:font-size 32,
+   :line-height "60px",
    :padding-left 8,
-   :display :inline-block,
+   :padding-right 8,
+   :outline :none,
+   :background-color "#ccc",
+   :border :none,
+   :color :white})
+
+(def button
+  {:display :inline-block,
+   :padding-left 8,
+   :padding-right 8,
+   :cursor :pointer,
+   :background-color "#aad",
+   :line-height "60px",
    :height 60})

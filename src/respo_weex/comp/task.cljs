@@ -8,18 +8,18 @@
             [respo-weex.comp.text :refer [comp-text]]
             [respo-weex.style.widget :as widget]))
 
-(def style-task {:padding-top 4, :position :relative, :padding-bottom 4})
+(def style-task {:padding-top 4, :padding-bottom 4, :position :relative})
 
 (defn update-state [state text] text)
 
 (defn handle-done [task-id] (fn [e dispatch!] (dispatch! :toggle task-id)))
 
 (def style-done
-  {:vertical-align :middle, :width 60, :outline :none, :border :none, :height 60})
+  {:width 60, :height 60, :outline :none, :border :none, :vertical-align :middle})
 
 (defn init-state [props] "")
 
-(def style-row {:justify-content :flex-start, :display :flex, :flex-direction :row})
+(def style-row {:display :flex, :flex-direction :row, :justify-content :flex-start})
 
 (defn on-text-change [task]
   (fn [event dispatch!]
@@ -44,14 +44,14 @@
       (input
        {:style (merge widget/input {:width 320}),
         :event {:input (on-text-change task)},
-        :attrs {:placeholder "Task", :value (:text task)}}))
+        :attrs {:value (:text task), :placeholder "Task"}}))
      (comp-space nil 8)
      (div
       {:style style-row}
       (input
        {:style (merge widget/input {:width 320}),
         :event {:input (on-text-state mutate!)},
-        :attrs {:placeholder "Temp notes", :value state}})
+        :attrs {:value state, :placeholder "Temp notes"}})
       (comp-space 8 nil)
       (div
        {:style widget/button, :event {:click (handle-remove task)}}

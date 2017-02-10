@@ -11,7 +11,14 @@
 
 (defonce global-element (atom nil))
 
+(defn gc-states! [states-ref]
+  (let [removed-paths (find-removed @states-ref @global-element [])]
+    (if (not (empty? removed-paths))
+      (reset! states-ref (apply-remove @states-ref removed-paths)))))
+
 (defonce cache-element (atom nil))
+
+(defn clear-cache! [] (reset! cache-element nil))
 
 (defn render-element [markup states-ref]
   (let [build-mutate (mutate-factory global-element states-ref)]
@@ -40,10 +47,3 @@
   (if (some? @global-element)
     (rerender-app! markup target dispatch states-ref)
     (mount-app! markup target dispatch states-ref)))
-
-(defn clear-cache! [] (reset! cache-element nil))
-
-(defn gc-states! [states-ref]
-  (let [removed-paths (find-removed @states-ref @global-element [])]
-    (if (not (empty? removed-paths))
-      (reset! states-ref (apply-remove @states-ref removed-paths)))))

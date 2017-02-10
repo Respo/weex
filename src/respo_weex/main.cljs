@@ -6,11 +6,11 @@
             [respo-weex.comp.container :refer [comp-container]]
             [cljs.reader :refer [read-string]]))
 
+(defonce global-store (atom schema/store))
+
 (defonce id-ref (atom 0))
 
 (defn id! [] (swap! id-ref inc) @id-ref)
-
-(defonce global-store (atom schema/store))
 
 (defn dispatch! [op op-data]
   (let [op-id (id!), new-store (updater @global-store op op-data op-id)]
@@ -31,6 +31,9 @@
     (add-watch
      global-states
      :renderer
-     (fn [] (println "State changes:" @global-states) (render-app! target)))))
+     (fn [] (println "State changes:" @global-states) (render-app! target)))
+    (js/sendTasks
+     js/document.id
+     (clj->js [{:module "dom", :method "createFinish", :args []}]))))
 
 (-main)
