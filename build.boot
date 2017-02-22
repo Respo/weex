@@ -1,15 +1,17 @@
 
 (set-env!
+  :asset-paths #{"assets/"}
   :resource-paths #{"polyfill" "src"}
   :dependencies '[[org.clojure/clojure       "1.8.0"       :scope "test"]
                   [org.clojure/clojurescript "1.9.293"     :scope "test"]
                   [adzerk/boot-cljs          "1.7.228-1"   :scope "test"]
                   [andare                    "0.4.0"       :scope "test"]
-                  [cirru/boot-stack-server   "0.1.28"      :scope "test"]
-                  [cumulo/shallow-diff       "0.1.1"       :scope "test"]
+                  [cirru/boot-stack-server   "0.1.30"      :scope "test"]
+                  [cumulo/shallow-diff       "0.1.2"       :scope "test"]
+                  [fipp                      "0.6.9"       :scope "test"]
                   [mvc-works/hsl             "0.1.2"]
                   [respo/ui                  "0.1.6"]
-                  [respo                     "0.3.34"]])
+                  [respo                     "0.3.37"]])
 
 (require '[adzerk.boot-cljs   :refer [cljs]])
 
@@ -24,9 +26,8 @@
        :license     {"MIT" "http://opensource.org/licenses/mit-license.php"}})
 
 (deftask build-simple []
-  (set-env!
-    :asset-paths #{"assets/"})
   (comp
+    (watch)
     (cljs :optimizations :simple
           :compiler-options {:language-in :ecmascript5
                              :parallel-build true
@@ -35,8 +36,6 @@
     (target)))
 
 (deftask build-advanced []
-  (set-env!
-    :asset-paths #{"assets/"})
   (comp
     (cljs :optimizations :advanced
           :compiler-options {:language-in :ecmascript5
